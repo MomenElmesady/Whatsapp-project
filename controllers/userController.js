@@ -113,13 +113,14 @@ exports.protect = async (req, res, next) => {
     }
 
     token = token.split(" ")[1];
+    console.log(req.cookies)
     // if (!req.cookies.refreshToken) {
     //   return next(new appError("No refreshToken in cookie!", 401));
     // }
     // more security-> may compare it with the stored in db
-    // if (!req.cookies.refreshToken) {
-    //   return res.status(400).json({ message: "No refreshToken found in cookie" })
-    // }
+    if (!req.cookies?.refreshToken) {
+      return res.status(401).json({ message: "No refreshToken found in cookie" })
+    }
     let decoded
     try {
       decoded = await promisify(jwt.verify)(token, process.env.ACCESS_SECRET);
