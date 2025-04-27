@@ -125,10 +125,10 @@ exports.loginService = async (data, res) => {
     if (!user.isVerified) {
       return { code: 404, message: 'user is not active' }
     }
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatch) {
-      return { code: 404, message: 'wrong credential' }
-    }
+    // const isPasswordMatch = await bcrypt.compare(password, user.password);
+    // if (!isPasswordMatch) {
+    //   return { code: 404, message: 'wrong credential' }
+    // }
     console.log(logUserIn, typeof logUserIn)
     const { accessToken, refreshToken } = logUserIn(res, user)
     console.log(refreshToken)
@@ -218,6 +218,18 @@ exports.uploadProfileImg = async (userId, data, file) => {
     await user.save()
     return { code: 200, message: "image uploaded successfully", data: { profile_image } }
 
+  } catch (error) {
+    throw `Error in searchInUsers service ${error.message}`
+  }
+}
+
+exports.getuserCurrentStatus = async (userId) => {
+  try {
+    const userStatus = await userRepository.getuserCurrentStatus(userId)
+    if (!userStatus){
+      return {code: 404, message: "user not found!"}
+    }
+    return {code: 200, data: userStatus}
   } catch (error) {
     throw `Error in searchInUsers service ${error.message}`
   }

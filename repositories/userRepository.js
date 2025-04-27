@@ -1,4 +1,5 @@
 const User = require("../models/user.model")
+const UserStatus = require("../models/userStatus.model")
 const { Op } = require("sequelize");
 const sequelize = require("../config/database")
 
@@ -8,6 +9,13 @@ exports.getUserByEmail = async (email) => {
     return await User.findOne({ where: { email } })
   } catch (error) {
     throw `Error in getUserByEmail repository ${error.message}`
+  }
+}
+exports.getuserCurrentStatus = async (userId) => {
+  try {
+    return await UserStatus.findOne({ where: { user_id: userId } })
+  } catch (error) {
+    throw `Error in getuserCurrentStatus repository ${error.message}`
   }
 }
 exports.getUserByNumber = async (phone_number) => {

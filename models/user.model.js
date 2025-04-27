@@ -45,6 +45,10 @@ const User = sequelize.define("User", {
   isVerified: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
+  },
+  fcm_token: {
+    type: DataTypes.TEXT,
+    defaultValue: null
   }
 }, {
   timestamps: true, // Enables createdAt and updatedAt

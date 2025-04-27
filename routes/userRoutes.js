@@ -6,6 +6,9 @@ const router = express.Router();
 router.get("/",userController.protect,userController.getUser)
 router.put("/",userController.protect,userController.editUser)
 router.get("/search",userController.protect,userController.searchInUsers)
+router.get("/currentStatus",userController.protect,userController.getuserCurrentStatus)
 router.post("/image",userController.protect,uploadProfile.single("image"),userController.uploadProfileImg)
+
+app.post('/api/register-fcm-token', userController.registerFCMToken);
 
 module.exports = router

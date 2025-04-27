@@ -1,7 +1,7 @@
 const userService = require("../services/user.service.js")
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
-
+const User = require("../models/user.model.js")
 
 exports.signUp = async (req, res) => {
   try {
@@ -75,9 +75,9 @@ exports.getUser = async (req, res, next) => {
 
 exports.editUser = async (req, res, next) => {
   try {
-    const userId = req.userId 
-    const data = req.body 
-    const response = await userService.updateUserService(userId,data)
+    const userId = req.userId
+    const data = req.body
+    const response = await userService.updateUserService(userId, data)
     res.status(response.code).json(response)
   } catch (error) {
     res.status(500).json({ message: 'Internal Server Error' })
@@ -85,9 +85,9 @@ exports.editUser = async (req, res, next) => {
 }
 exports.uploadProfileImg = async (req, res, next) => {
   try {
-    const userId = req.userId 
-    const data = req.body 
-    const response = await userService.uploadProfileImg(userId,data,req.file)
+    const userId = req.userId
+    const data = req.body
+    const response = await userService.uploadProfileImg(userId, data, req.file)
     res.status(response.code).json(response)
   } catch (error) {
     res.status(500).json({ message: 'Internal Server Error' })
@@ -97,14 +97,50 @@ exports.uploadProfileImg = async (req, res, next) => {
 
 exports.searchInUsers = async (req, res, next) => {
   try {
-    const userId = req.userId 
+    const userId = req.userId
     const t = req.query.t
-    const response = await userService.searchInUsers(userId,t)
+    const response = await userService.searchInUsers(userId, t)
     res.status(response.code).json(response)
   } catch (error) {
     res.status(500).json({ message: 'Internal Server Error' })
   }
 }
+
+exports.getuserCurrentStatus = async (req, res, next) => {
+  try {
+    const userId = req.userId
+    const response = await userService.getuserCurrentStatus(userId)
+    res.status(response.code).json(response)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Internal Server Error' })
+  }
+}
+exports.registerFCMToken = async (req, res, next) => {
+  const { userId, fcmToken } = req.body;
+
+  if (!userId || !fcmToken) {
+    return res.status(400).json({ message: 'User ID and FCM Token are required.' });
+  }
+
+  try {
+    // Check if the user exists, if not create or update
+    let user = await User.findOne({ userId });
+    if (!user) {
+      return res.status(404).json({ message: 'user not found.' });
+    } else {
+      user.fcmToken = fcmToken;  // Update token if it's already there
+    }
+
+    await user.save();
+
+    res.status(200).json({ message: 'FCM token registered/updated successfully.' });
+  } catch (err) {
+    console.error('Error saving FCM token:', err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
 exports.protect = async (req, res, next) => {
   try {
     let token = req.headers?.authorization;
