@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
+const UserStatus = require("./userStatus.model");
 
 const User = sequelize.define("User", {
   id: {
@@ -14,8 +15,7 @@ const User = sequelize.define("User", {
   },
   phone_number: {
     type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
+    allowNull: false
   },
   profile_image: {
     type: DataTypes.STRING,
@@ -51,12 +51,38 @@ const User = sequelize.define("User", {
     defaultValue: null
   }
 }, {
+  indexes: [
+    {
+      name: 'idx_users_email',
+      fields: ['email']
+    }
+  ]
+  ,
   timestamps: true, // Enables createdAt and updatedAt
   hooks: {
     beforeCreate: async (user, options) => {
-      user.password = await hashPassword(user.password);
+      try {
+        // Hash the password before creating the user
+        user.password = await hashPassword(user.password);
+      } catch (error) {
+        console.error("Error hashing password:", error);
+        throw new Error('Password hashing failed');
+      }
+    },
+  
+    afterCreate: async (user, options) => {
+      try {
+        // Create a UserStatus record after the user is created
+        await UserStatus.create({
+          user_id: user.id,
+          last_seen: new Date()
+        });
+      } catch (error) {
+        console.error("Error creating UserStatus:", error);
+        throw new Error('User status creation failed');
+      }
     }
-  },
+  }
 });
 
 async function hashPassword(password) {

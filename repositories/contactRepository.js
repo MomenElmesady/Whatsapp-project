@@ -28,7 +28,7 @@ exports.getUserContacts = async (userId) => {
         {
           model: User,
           as: "contacts",
-          attributes: ["id", "name", "profile_image"],
+          attributes: ["id", "name", "profile_image","email","discription"],
           through: { attributes: [] }, // Prevents returning the Contact table data
         },
       ],

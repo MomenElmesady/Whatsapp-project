@@ -17,6 +17,13 @@ const StatusView = sequelize.define("StatusViews", {
     allowNull: false
   }
 }, {
+  indexes: [
+    {
+      name: 'status_user_idx',
+      unique: true, // if each user can view a status only once
+      fields: ['status_id', 'user_id']
+    }
+  ],
   timestamps: true, // Enables createdAt and updatedAt
 });
 

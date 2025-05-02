@@ -24,10 +24,11 @@ exports.signUpService = async (data) => {
     if (user) {
       return { code: 404, message: 'user already found!' }
     }
-    user = await userRepository.getUserByNumber(data.phone_number)
-    if (user) {
-      return { code: 404, message: 'user with this number already found!' }
-    }
+    // only email in unique 
+    // user = await userRepository.getUserByNumber(data.phone_number)
+    // if (user) {
+    //   return { code: 404, message: 'user with this number already found!' }
+    // }
     const otp = generateOTP();
     const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000); // OTP valid for 5 minutes
     let newUser = {
