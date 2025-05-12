@@ -10,6 +10,7 @@ exports.getContactsStatusService = async (userId) => {
     plainData.contacts = plainData.contacts.map(contact => {
       contact.statuses = contact.statuses.map(status => {
         status.views = status.views.length > 0; // true if views exist, false otherwise
+        status.reacts = status.reacts.length > 0; // true if views exist, false otherwise
         return status;
       });
 

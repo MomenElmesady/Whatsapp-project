@@ -35,6 +35,14 @@ exports.getContactsStatus = async (userId) => {
                   required: false, // Ensures contacts without views are still included
                   order: ['createdAt']
                 },
+                {
+                  model: StatusReact,
+                  as: "reacts",
+                  attributes: ["id"],
+                  where: { user_id: userId },
+                  required: false, // Ensures contacts without views are still included
+                  order: ['createdAt']
+                },
               ],
             },
           ],
