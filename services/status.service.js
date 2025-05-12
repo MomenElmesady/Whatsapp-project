@@ -9,8 +9,8 @@ exports.getContactsStatusService = async (userId) => {
     // Process `statuses` array: Replace `views` with `true` if not empty, `false` if empty
     plainData.contacts = plainData.contacts.map(contact => {
       contact.statuses = contact.statuses.map(status => {
-        status.views = status.views.length > 0; // true if views exist, false otherwise
-        status.reacts = status.reacts.length > 0; // true if views exist, false otherwise
+        status.is_viewed = status.views.length > 0; // true if views exist, false otherwise
+        status.is_reacted = status.reacts.length > 0; // true if views exist, false otherwise
         return status;
       });
 
