@@ -43,7 +43,8 @@ exports.getUserById = async (userId) => {
         "name",
         "phone_number",
         "discription",
-        "email"
+        "email",
+        "profile_image"
       ]
     })
 
